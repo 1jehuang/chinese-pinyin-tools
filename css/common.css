@@ -1,17 +1,5 @@
 /* Common styles shared across all quiz pages */
 
-body {
-    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-    font-weight: 300;
-}
-
-button,
-input,
-select,
-textarea {
-    font: inherit;
-}
-
 /* Home button */
 .home-btn {
     position: fixed;

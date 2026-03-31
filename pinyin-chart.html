@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pinyin Chart with Audio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/common.css">
     <script src="js/utils.js"></script>
@@ -22,24 +19,24 @@
         }
     </style>
 </head>
-<body class="bg-zinc-950 min-h-screen p-4 md:p-8 text-zinc-100">
-    <a href="index.html" class="fixed top-4 left-4 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 px-3 py-2 rounded-lg shadow border border-zinc-700 transition text-sm">← Home</a>
-    <div class="max-w-7xl mx-auto bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl p-6 md:p-8 mt-16 md:mt-0">
-        <h1 class="text-3xl font-bold text-center mb-6 text-zinc-100">汉语拼音表 Pinyin Chart</h1>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+    <a href="index.html" class="fixed top-4 left-4 bg-white hover:bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow border border-gray-200 transition text-sm">← Home</a>
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 mt-16 md:mt-0">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">汉语拼音表 Pinyin Chart</h1>
 
         <div class="flex flex-wrap gap-2 justify-center mb-6">
-            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 transition active" data-tone="1">First Tone (ā)</button>
-            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 transition" data-tone="2">Second Tone (á)</button>
-            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 transition" data-tone="3">Third Tone (ǎ)</button>
-            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 transition" data-tone="4">Fourth Tone (à)</button>
-            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-zinc-700 bg-zinc-900 hover:bg-zinc-800 text-zinc-100 transition" data-tone="5">Neutral Tone (a)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition active" data-tone="1">First Tone (ā)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="2">Second Tone (á)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="3">Third Tone (ǎ)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="4">Fourth Tone (à)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="5">Neutral Tone (a)</button>
         </div>
 
         <div class="overflow-x-auto mb-4">
             <table id="pinyinTable" class="w-full border-collapse text-sm">
                 <thead>
                     <tr>
-                        <th class="border border-zinc-700 bg-zinc-800 px-2 py-2 text-zinc-100">Initial \ Final</th>
+                        <th class="border border-gray-300 bg-gray-50 px-2 py-2">Initial \ Final</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,7 +44,7 @@
             </table>
         </div>
 
-        <div class="text-center text-zinc-400 text-sm mt-4">
+        <div class="text-center text-gray-600 text-sm mt-4">
             Click any pinyin syllable to hear its pronunciation. Select different tones above.
         </div>
     </div>
@@ -157,13 +154,13 @@
             const tbody = table.querySelector('tbody');
 
             // Clear existing content
-            thead.innerHTML = '<th class="border border-zinc-700 bg-zinc-800 px-2 py-2 text-zinc-100">Initial \\ Final</th>';
+            thead.innerHTML = '<th class="border border-gray-300 bg-gray-50 px-2 py-2">Initial \\ Final</th>';
             tbody.innerHTML = '';
 
             // Add finals as column headers
             finals.forEach(final => {
                 const th = document.createElement('th');
-                th.className = 'border border-zinc-700 bg-zinc-800 px-2 py-2 text-zinc-100';
+                th.className = 'border border-gray-300 bg-gray-50 px-2 py-2';
                 th.textContent = final;
                 thead.appendChild(th);
             });
@@ -172,23 +169,23 @@
             initials.forEach(initial => {
                 const tr = document.createElement('tr');
                 const th = document.createElement('td');
-                th.className = 'border border-zinc-700 bg-zinc-800 px-2 py-2 font-semibold text-zinc-100';
+                th.className = 'border border-gray-300 bg-gray-50 px-2 py-2 font-semibold';
                 th.textContent = initial || '∅';
                 tr.appendChild(th);
 
                 finals.forEach(final => {
                     const td = document.createElement('td');
-                    td.className = 'border border-zinc-700 px-2 py-2 text-center text-zinc-100';
+                    td.className = 'border border-gray-300 px-2 py-2 text-center';
 
                     if (validCombinations[initial] && validCombinations[initial].includes(final)) {
                         const pinyin = normalizePinyin(initial, final);
                         const span = document.createElement('span');
-                        span.className = 'syllable cursor-pointer text-blue-300 hover:bg-blue-950 px-2 py-1 rounded inline-block transition';
+                        span.className = 'syllable cursor-pointer text-blue-600 hover:bg-blue-100 px-2 py-1 rounded inline-block transition';
                         span.textContent = pinyin;
                         span.onclick = () => playPinyin(initial, final, span);
                         td.appendChild(span);
                     } else {
-                        td.classList.add('text-zinc-600');
+                        td.classList.add('text-gray-300');
                         td.textContent = '—';
                     }
 
