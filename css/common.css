@@ -2,6 +2,7 @@
 
 body {
     font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    font-weight: 300;
 }
 
 button,

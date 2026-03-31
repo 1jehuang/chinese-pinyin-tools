@@ -6,30 +6,28 @@
   <title>Chinese Pinyin Tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+      font-weight: 300;
     }
   </style>
 </head>
 <body class="bg-zinc-950 min-h-screen text-zinc-100">
-  <div class="max-w-3xl mx-auto px-6 py-20">
-    <header class="text-center mb-12">
-      <h1 class="text-4xl font-semibold tracking-tight text-zinc-100 mb-3">Chinese Pinyin Tools</h1>
-      <p class="text-zinc-400">Two simple tools for practicing Mandarin pinyin.</p>
+  <div class="max-w-md mx-auto px-6 py-28">
+    <header class="text-center mb-10">
+      <h1 class="text-2xl tracking-tight text-zinc-100">Chinese Pinyin Tools</h1>
     </header>
 
-    <main class="grid gap-4 md:grid-cols-2">
-      <a href="pinyin-practice.html" class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 transition hover:border-zinc-700 hover:bg-zinc-800/80">
-        <h2 class="text-xl font-semibold text-zinc-100 mb-2">Pinyin Practice</h2>
-        <p class="text-sm leading-6 text-zinc-400">Practice listening, typing, tone discrimination, and double-syllable drills.</p>
+    <main class="flex flex-col gap-3">
+      <a href="pinyin-practice.html" class="block rounded-md border border-zinc-800 px-4 py-4 transition hover:bg-zinc-900">
+        <h2 class="text-base text-zinc-100">Pinyin Practice</h2>
       </a>
 
-      <a href="pinyin-chart.html" class="bg-zinc-900 rounded-2xl border border-zinc-800 p-6 transition hover:border-zinc-700 hover:bg-zinc-800/80">
-        <h2 class="text-xl font-semibold text-zinc-100 mb-2">Pinyin Chart</h2>
-        <p class="text-sm leading-6 text-zinc-400">Explore the Mandarin pinyin chart with selectable tones and clickable audio playback.</p>
+      <a href="pinyin-chart.html" class="block rounded-md border border-zinc-800 px-4 py-4 transition hover:bg-zinc-900">
+        <h2 class="text-base text-zinc-100">Pinyin Chart</h2>
       </a>
     </main>
   </div>
