@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinyin Chart with Audio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/common.css">
+    <script src="js/utils.js"></script>
+    <style>
+        .tone-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .syllable.playing {
+            background-color: #fef08a !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+    <a href="index.html" class="fixed top-4 left-4 bg-white hover:bg-gray-100 text-gray-700 px-3 py-2 rounded-lg shadow border border-gray-200 transition text-sm">← Home</a>
+    <div class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8 mt-16 md:mt-0">
+        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">汉语拼音表 Pinyin Chart</h1>
+
+        <div class="flex flex-wrap gap-2 justify-center mb-6">
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition active" data-tone="1">First Tone (ā)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="2">Second Tone (á)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="3">Third Tone (ǎ)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="4">Fourth Tone (à)</button>
+            <button class="tone-btn px-4 py-2 rounded-lg border-2 border-gray-300 hover:bg-gray-100 transition" data-tone="5">Neutral Tone (a)</button>
+        </div>
+
+        <div class="overflow-x-auto mb-4">
+            <table id="pinyinTable" class="w-full border-collapse text-sm">
+                <thead>
+                    <tr>
+                        <th class="border border-gray-300 bg-gray-50 px-2 py-2">Initial \ Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center text-gray-600 text-sm mt-4">
+            Click any pinyin syllable to hear its pronunciation. Select different tones above.
+        </div>
+    </div>
+
+    <script>
+        const finals = [
+            'a', 'o', 'e', 'i', 'u', 'ü',
+            'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe',
+            'er', 'an', 'en', 'in', 'un', 'ün',
+            'ang', 'eng', 'ing', 'ong'
+        ];
+
+        const initials = [
+            '', 'b', 'p', 'm', 'f',
+            'd', 't', 'n', 'l',
+            'g', 'k', 'h',
+            'j', 'q', 'x',
+            'zh', 'ch', 'sh', 'r',
+            'z', 'c', 's'
+        ];
+
+        const validCombinations = {
+            '': ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'iu', 'ie', 'üe', 'er', 'an', 'en', 'in', 'un', 'ün', 'ang', 'eng', 'ing', 'ong'],
+            'b': ['a', 'o', 'e', 'i', 'u', 'ai', 'ei', 'ao', 'ou', 'an', 'en', 'in', 'ang', 'eng', 'ing'],
+            'p': ['a', 'o', 'e', 'i', 'u', 'ai', 'ei', 'ao', 'ou', 'an', 'en', 'in', 'ang', 'eng', 'ing'],
+            'm': ['a', 'o', 'e', 'i', 'u', 'ai', 'ei', 'ao', 'ou', 'an', 'en', 'in', 'ang', 'eng', 'ing'],
+            'f': ['a', 'o', 'u', 'ei', 'ou', 'an', 'en', 'ang', 'eng'],
+            'd': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'ie', 'an', 'en', 'un', 'ang', 'eng', 'ing', 'ong'],
+            't': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'ie', 'an', 'en', 'un', 'ang', 'eng', 'ing', 'ong'],
+            'n': ['a', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'ie', 'üe', 'an', 'en', 'in', 'un', 'ang', 'eng', 'ing', 'ong'],
+            'l': ['a', 'o', 'e', 'i', 'u', 'ü', 'ai', 'ei', 'ui', 'ao', 'ou', 'ie', 'üe', 'an', 'en', 'in', 'un', 'ang', 'eng', 'ing', 'ong'],
+            'g': ['a', 'e', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            'k': ['a', 'e', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            'h': ['a', 'e', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            'j': ['i', 'u', 'ü', 'ie', 'üe', 'in', 'un', 'ün', 'ing'],
+            'q': ['i', 'u', 'ü', 'ie', 'üe', 'in', 'un', 'ün', 'ing'],
+            'x': ['i', 'u', 'ü', 'ie', 'üe', 'in', 'un', 'ün', 'ing'],
+            'zh': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ing', 'ong'],
+            'ch': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ing', 'ong'],
+            'sh': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng'],
+            'r': ['e', 'i', 'u', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            'z': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            'c': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong'],
+            's': ['a', 'e', 'i', 'u', 'ai', 'ei', 'ui', 'ao', 'ou', 'an', 'en', 'un', 'ang', 'eng', 'ong']
+        };
+
+        let currentTone = 1;
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function normalizePinyin(initial, final) {
+            let pinyin = initial + final;
+
+            // Handle special cases
+            if (initial === '' && final === 'i') pinyin = 'yi';
+            if (initial === '' && final === 'in') pinyin = 'yin';
+            if (initial === '' && final === 'ing') pinyin = 'ying';
+            if (initial === '' && final === 'u') pinyin = 'wu';
+            if (initial === '' && final === 'un') pinyin = 'wen';
+            if (initial === '' && final === 'ü') pinyin = 'yu';
+            if (initial === '' && final === 'ün') pinyin = 'yun';
+            if (initial === '' && final === 'üe') pinyin = 'yue';
+
+            // j, q, x + ü combinations
+            if ((initial === 'j' || initial === 'q' || initial === 'x') && final.startsWith('ü')) {
+                pinyin = initial + final.replace('ü', 'u');
+            }
+
+            return pinyin;
+        }
+
+        function playPinyin(initial, final, element) {
+            document.querySelectorAll('.syllable.playing').forEach(el => {
+                el.classList.remove('playing');
+            });
+
+            element.classList.add('playing');
+
+            const pinyin = normalizePinyin(initial, final);
+            const audioUrl = `https://www.purpleculture.net/mp3/${pinyin}${currentTone}.mp3`;
+
+            const audio = new Audio(audioUrl);
+            audio.play().catch(err => {
+                console.error('Audio playback failed:', err);
+                element.classList.remove('playing');
+            });
+
+            audio.onended = () => {
+                element.classList.remove('playing');
+            };
+        }
+
+        function getTonePitch(tone) {
+            const pitches = {
+                1: 1.2,  // High level
+                2: 1.1,  // Rising
+                3: 0.9,  // Low dipping
+                4: 1.0,  // Falling
+                5: 1.0   // Neutral
+            };
+            return pitches[tone] || 1.0;
+        }
+
+        function createTable() {
+            const table = document.getElementById('pinyinTable');
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+
+            // Clear existing content
+            thead.innerHTML = '<th class="border border-gray-300 bg-gray-50 px-2 py-2">Initial \\ Final</th>';
+            tbody.innerHTML = '';
+
+            // Add finals as column headers
+            finals.forEach(final => {
+                const th = document.createElement('th');
+                th.className = 'border border-gray-300 bg-gray-50 px-2 py-2';
+                th.textContent = final;
+                thead.appendChild(th);
+            });
+
+            // Add rows for each initial
+            initials.forEach(initial => {
+                const tr = document.createElement('tr');
+                const th = document.createElement('td');
+                th.className = 'border border-gray-300 bg-gray-50 px-2 py-2 font-semibold';
+                th.textContent = initial || '∅';
+                tr.appendChild(th);
+
+                finals.forEach(final => {
+                    const td = document.createElement('td');
+                    td.className = 'border border-gray-300 px-2 py-2 text-center';
+
+                    if (validCombinations[initial] && validCombinations[initial].includes(final)) {
+                        const pinyin = normalizePinyin(initial, final);
+                        const span = document.createElement('span');
+                        span.className = 'syllable cursor-pointer text-blue-600 hover:bg-blue-100 px-2 py-1 rounded inline-block transition';
+                        span.textContent = pinyin;
+                        span.onclick = () => playPinyin(initial, final, span);
+                        td.appendChild(span);
+                    } else {
+                        td.classList.add('text-gray-300');
+                        td.textContent = '—';
+                    }
+
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Tone selector functionality
+        document.querySelectorAll('.tone-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTone = parseInt(btn.dataset.tone);
+            });
+        });
+
+        // Initialize table
+        createTable();
+    </script>
+</body>
+</html>
